@@ -1,0 +1,29 @@
+---
+name: "Destroy Infra With Terraform"
+on:
+  workflow_dispatch:
+
+jobs:
+
+  deploy-infra:
+    name: "Dsstroy with Terraform"
+    runs-on: ubuntu-latest
+    env:
+      AWS_ACCESS_KEY_ID: ${{ secrets.access_key }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.secret_key }}
+      AWS_DEFAULT_REGION: "ap-south-1"
+      TERRAFORM_VERSION: "1.13.5"
+
+    steps:
+      - name: "Repository Checkout"
+        uses: actions/checkout@v5
+
+      - name: "Terraform Installation"
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: ${{ env.TERRAFORM_VERSION }}
+
+      - name: "Terraform Destroy"
+        run: terraform destroy -auto-approve
+        working-directory: ./terraform/
+
